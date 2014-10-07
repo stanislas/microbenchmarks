@@ -25,13 +25,43 @@
 
 package ch.hood.microbenchmarks;
 
-import org.openjdk.jmh.annotations.Benchmark;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-public class MyBenchmark {
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+
+@State(Scope.Benchmark)
+public class LinkedListVsArrayList {
+
+	public static final Integer INTEGER = 1;
+
+	@Param({"10", "100", "1000"})
+	public int size;
 
     @Benchmark
-    public void testMethod() {
-        // place your benchmarked code here
-    }
+    public List<Integer> linkedList() {
+		return benchmarkList(new LinkedList<Integer>());
+	}
+
+	private List<Integer> benchmarkList(List<Integer> list) {
+		for (int i = 0; i < size; i++) {
+			list.add(INTEGER);
+		}
+		return list;
+	}
+
+	@Benchmark
+	public List<Integer> arrayListSmall() {
+		return benchmarkList(new ArrayList<Integer>());
+	}
+
+	@Benchmark
+	public List<Integer> arrayListLarge() {
+		return benchmarkList(new ArrayList<Integer>(size));
+	}
 
 }
